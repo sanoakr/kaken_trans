@@ -35,6 +35,7 @@ def splitResearcher(dataFrame, colName):
     newdf2 = newdf1['tmp'].str.rsplit(n=1, expand=True)
     newdf2.columns = [colName+'.'+'氏名', colName+'.'+'所属']
     newdf = pd.concat([dataFrame, newdf2, newdf1[colName+'.'+'学部'], newdf1[colName+'.'+'職階'], newdf1[colName+'.'+'研究者番号']], axis=1)
+    return newdf
 
 if __name__ == '__main__':
     # 変換元 CSV ファイル
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     size = len(df)
 
     # 研究代表者
-    df = pd.concat([df, splitResearcher(df, '研究代表者')])
+    df = splitResearcher(df, '研究代表者')
 
     # 研究分担者は放置
     #cname = '研究分担者'
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     # 年度別予算
     yeardf = pd.DataFrame(index=[], columns=df.columns)
     drops = []
-    print(len(df.index),"records are processing...")
+    print(len(df.index),"records are being processed...")
     for index, row in tqdm.tqdm(df.iterrows()):
         newyeardf = duplicateRecordWithColon(dataFrame=df, colName='各年度配分額', dup_index=index)
         if len(newyeardf.index) > 0:
